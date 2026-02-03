@@ -15,10 +15,23 @@ class Config:
 
     # Logging
     LOG_LEVEL = os.getenv("LOG_LEVEL", "DEBUG")
-    APP_ENV= os.getenv("APP_ENV", "development")
+    APP_ENV = os.getenv("APP_ENV", "development")
+    
     # API
     HOST = os.getenv("HOST", "0.0.0.0")
     PORT = int(os.getenv("PORT", "8000"))
+    
+    # Database
+    DATABASE_URL = os.getenv(
+        "DATABASE_URL",
+        "postgresql://rss_user:rss_password@localhost:5432/rss_feed_db"
+    )
+    SQL_ECHO = os.getenv("SQL_ECHO", "false").lower() == "true"  # Log SQL queries
+    
+    # Security & Authentication
+    SECRET_KEY = os.getenv("SECRET_KEY", "change-this-secret-key-in-production-use-secrets-token-urlsafe-32")
+    JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
+    JWT_EXPIRATION_HOURS = int(os.getenv("JWT_EXPIRATION_HOURS", "24"))
 
     # Performance
     MAX_WORKERS = int(os.getenv("MAX_WORKERS", "20"))
@@ -29,7 +42,6 @@ class Config:
     MAX_FEED_ENTRIES = int(os.getenv("MAX_FEED_ENTRIES", "1000"))
     MIN_CONTENT_LENGTH = int(os.getenv("MIN_CONTENT_LENGTH", "50"))
     MAX_TAGS_PER_ARTICLE = int(os.getenv("MAX_TAGS_PER_ARTICLE", "10"))
-    MAX_FEED_ENTRIES = int(os.getenv("MAX_FEED_ENTRIES", "200"))
 
     # URLs
     JINA_BASE_URL = os.getenv("JINA_BASE_URL", "https://r.jina.ai")
@@ -60,7 +72,7 @@ class Config:
         "--disable-blink-features=AutomationControlled",
         "--disable-extensions",
         "--disable-plugins",
-        "--disable-images",  # Désactiver les images pour plus de vitesse
+        "--disable-images",
         "--disable-gpu",
         "--disable-software-rasterizer",
         "--disable-dev-tools",
@@ -80,12 +92,14 @@ class Config:
         "--metrics-recording-only",
         "--mute-audio",
     ]
+    
     # Headers HTTP
     HEADERS: Dict[str, str] = {
         "User-Agent": "Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Mobile Safari/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.9,fr;q=0.8",
     }
+    
     # Headers spécifiques Jina
     JINA_HEADERS: Dict[str, str] = {
         "X-Return-Format": "html",
@@ -94,6 +108,7 @@ class Config:
         "X-Timeout": str(JINA_TIMEOUT),
         **HEADERS,
     }
+    
     BAD_KEYWORDS = [
         "cookie",
         "consent",
@@ -128,6 +143,7 @@ class Config:
         "fb-comments",
         "facebook-comments",
     ]
+    
     ADS_DOMAINS = [
         "doubleclick.net",
         "googlesyndication.com",
@@ -144,6 +160,7 @@ class Config:
         "rubiconproject.com",
         "openx.net",
     ]
+    
     TRACKERS_DOMAINS = [
         "google-analytics.com",
         "googletagmanager.com",

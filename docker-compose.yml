@@ -1,0 +1,73 @@
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    container_name: rss_feed_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: rss_user
+      POSTGRES_PASSWORD: rss_password
+      POSTGRES_DB: rss_feed_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - rss_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rss_user -d rss_feed_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # RSS Feed App
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rss_feed_app
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://rss_user:rss_password@db:5432/rss_feed_db
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./cache:/app/cache
+      - ./logs:/app/logs
+    networks:
+      - rss_network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Nginx (reverse proxy)
+  nginx:
+    image: nginx:alpine
+    container_name: rss_feed_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - app
+    networks:
+      - rss_network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  rss_network:
+    driver: bridge
