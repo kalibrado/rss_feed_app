@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSS Feed Filter - Test Interface</title>
+  <link rel="stylesheet" href="/static/css/main.css">
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <h1>📰 RSS Feed Filter - Interface de Test</h1>
+      <p>Testez et visualisez vos flux RSS enrichis</p>
+    </div>
+  </header>
+
+  <!-- Search Form -->
+  <section class="search-section">
+    <form class="search-form" id="searchForm">
+      <div class="form-group">
+        <label for="rssUrl">URL du flux RSS</label>
+        <div class="input-wrapper">
+          <input type="text" id="rssUrl" placeholder="https://www.lesnumeriques.com/rss-news.xml" required>
+          <button type="submit" class="btn btn-primary" id="submitBtn">
+            <span>🔍</span>
+            Tester le flux
+          </button>
+        </div>
+      </div>
+
+      <div class="options-grid">
+        <div class="form-group">
+          <label for="maxEntries">Nombre d'articles</label>
+          <input type="number" id="maxEntries" value="10" min="1" max="50">
+        </div>
+
+        <div class="form-group">
+          <label for="workers">Workers</label>
+          <input type="number" id="workers" value="10" min="1" max="20">
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <!-- Loading -->
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p>Récupération et enrichissement du flux RSS...</p>
+    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+      Cela peut prendre quelques secondes
+    </p>
+  </div>
+
+  <!-- Error -->
+  <div class="error" id="error">
+    <div class="error-card">
+      <div class="error-title">❌ Erreur</div>
+      <div id="errorMessage"></div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats" id="stats">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="statTotal">0</div>
+        <div class="stat-label">Articles récupérés</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statWithImages">0</div>
+        <div class="stat-label">Avec images</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statTags">0</div>
+        <div class="stat-label">Tags extraits</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statTime">0s</div>
+        <div class="stat-label">Temps de traitement</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Articles -->
+  <div class="articles-container" id="articlesContainer">
+    <div class="articles-grid" id="articlesGrid"></div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <button class="modal-close" id="modalClose">×</button>
+      </div>
+      <div class="modal-body">
+        <img class="modal-image" id="modalImage" style="display: none;">
+        <div class="modal-meta" id="modalMeta"></div>
+        <div class="modal-article-content" id="modalContent"></div>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="external-link" id="modalLink" target="_blank">
+          Lire l'article original →
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/main.js"></script>
+</body>
+
+</html>
